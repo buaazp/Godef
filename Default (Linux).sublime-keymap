@@ -1,0 +1,3 @@
+[
+    { "keys": ["ctrl+d"], "command": "godef" }
+]

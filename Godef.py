@@ -9,7 +9,7 @@ class GodefCommand(sublime_plugin.WindowCommand):
       self.log("ERROR: no GOPATH defined")
       return
 
-    self.log("using gopath", self.gopath)
+    self.log("using gopath: ", self.gopath)
 
     view = self.window.active_view()
     row, col = view.rowcol(view.sel()[0].begin())
