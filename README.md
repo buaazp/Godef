@@ -42,7 +42,7 @@ Windows:
 
 ### Configuring `GOPATH`
 
-Here's an example `Godef.sublime-settings`:
+You need to add gopath to the setting file before using this plugin. Here's an example `Godef.sublime-settings`:
 
     {
         "gopath": "/Users/zippo/develop/GO"
@@ -56,11 +56,11 @@ The plugin will determine `GOPATH` from either:
 
 ### Key Bindings
 
-The default key of Godef is `super+d`. Here's an example key binding:
+The default key of Godef is `super/ctrl+d`. Here's an example key binding:
 
     { "keys": ["super+d"], "command": "godef" }
 
-You can alse add these two key-binding to jump between the postions. Using j/k is because I use vim mode. Change them by yourself:
+You can also add these two key-binding into your keymap file to jump between the postions. Using j/k is because I use vim mode. Change them by yourself:
 
 	{ "keys": ["super+j"], "command": "jump_forward"},
 	{ "keys": ["super+k"], "command": "jump_back"},
