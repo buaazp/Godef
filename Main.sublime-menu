@@ -42,7 +42,7 @@
                                 "command": "open_file",
                                 "platform": "OSX",
                                 "args": {
-                                    "file": "${packages}/User/Default (OSX).sublime-keymap",
+                                    "file": "${packages}/User/Default (OSX).sublime-keymap"
                                 },
                                 "caption": "Key Bindings – User"
                             },
@@ -58,7 +58,7 @@
                                 "command": "open_file",
                                 "platform": "Linux",
                                 "args": {
-                                    "file": "${packages}/User/Default (Linux).sublime-keymap",
+                                    "file": "${packages}/User/Default (Linux).sublime-keymap"
                                 },
                                 "caption": "Key Bindings – User"
                             },
