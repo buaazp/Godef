@@ -48,7 +48,18 @@ You need to add gopath to the setting file before using this plugin. Here's an e
         "gopath": "/Users/zippo/develop/GO"
     }
 
-The plugin will determine `GOPATH` from either:
+NOTE: The value of `gopath` should be a absolute path. Multiple path like env `GOPATH` are supported but relative path are not:
+
+```
+GOOD:
+"gopath": "/opt/golang:/Users/zippo/develop/GO"
+
+BAD:
+"gopath": "~/develop/GO"
+"gopath": "$HOME/develop/GO"
+```
+
+ This plugin will determine `GOPATH` from either:
 
 1. The `gopath` value from `Godef.sublime-settings`
 2. The `GOPATH` environment variable
@@ -56,7 +67,7 @@ The plugin will determine `GOPATH` from either:
 
 ### Key Bindings
 
-The default key of Godef is `super/ctrl+d`. Here's an example key binding:
+The default key of Godef is `super/ctrl+d`. You CAN of course change it by yourself. Here's an example key binding:
 
     { "keys": ["super+d"], "command": "godef" }
 

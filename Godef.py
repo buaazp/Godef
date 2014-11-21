@@ -28,13 +28,33 @@ import sublime, sublime_plugin, subprocess, os, time
 class GodefCommand(sublime_plugin.WindowCommand):
   def run(self):
     settings = sublime.load_settings("Godef.sublime-settings")
-    self.gopath = settings.get("gopath", os.getenv('GOPATH'))
-
-    if self.gopath is None:
+    gopath = settings.get("gopath", os.getenv('GOPATH'))
+    if gopath is None:
       self.log("ERROR: no GOPATH defined")
       return
 
-    self.log("using gopath: ", self.gopath)
+    self.gopath = gopath
+
+    gopaths = gopath.split(":")
+    found = False
+    binpath = ""
+    for path in gopaths:
+      binpath = os.path.join(path, "bin", "godef")
+
+      if not os.path.isfile(binpath):
+        self.log("WARN: godef not found at", binpath)
+        continue
+      else:
+        self.log("INFO: godef found at", binpath)
+        found = True
+        break
+
+    if found == False:
+      self.log("ERROR: godef not found!")
+      return
+    else:
+      self.godefpath = binpath
+      self.log("using godef:", self.godefpath)
 
     view = self.window.active_view()
     row, col = view.rowcol(view.sel()[0].begin())
@@ -45,15 +65,9 @@ class GodefCommand(sublime_plugin.WindowCommand):
     sublime.set_timeout_async(self.godef, 0)
 
   def godef(self):
-    godef_bin = os.path.join(self.gopath, "bin", "godef")
-
-    if not os.path.isfile(godef_bin):
-      self.log("ERROR: godef not found at", godef_bin)
-      return
-
     try:
       args = [
-        os.path.join(self.gopath, "bin", "godef"),
+        self.godefpath,
         "-f",
         self.filename,
         "-o",
@@ -73,7 +87,7 @@ class GodefCommand(sublime_plugin.WindowCommand):
 
     file = location[0]
     row = int(location[1]) - 1
-    col = int(location[2])
+    col = int(location[2]) - 1
 
     self.log("opening definition at " + file + ":" + str(row) + ":" + str(col))
     view = self.window.open_file(file)
@@ -81,7 +95,7 @@ class GodefCommand(sublime_plugin.WindowCommand):
     while view.is_loading():
       time.sleep(0.01)
 
-    region = sublime.Region(view.text_point(row, 0))
+    region = sublime.Region(view.text_point(row, col))
     view.sel().clear()
     view.sel().add(region)
     view.show_at_center(region)
