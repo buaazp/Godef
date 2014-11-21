@@ -1,6 +1,6 @@
 # Godef
 
-This Sublime Text 3 [golang](golang.org) plugin adds a `godef` command which
+This Sublime Text 2 [golang](golang.org) plugin adds a `godef` command which
 uses [godef](http://godoc.org/code.google.com/p/rog-go/exp/cmd/godef) to find
 the definition under the cursor.
 
@@ -25,12 +25,12 @@ Git clone this repository and place the entire `Godef` directory into your `Pack
 OSX:
 
     # Install the plugin
-    git clone git@github.com:buaazp/Godef.git ~/Library/Application\ Support/Sublime\ Text\ 3/Packages/Godef
+    git clone git@github.com:buaazp/Godef.git ~/Library/Application\ Support/Sublime\ Text\ 2/Packages/Godef
 
 Linux:
 
     # Install the plugin
-    git clone git@github.com:buaazp/Godef.git ~/.config/sublime-text-3/Packages/Godef
+    git clone git@github.com:buaazp/Godef.git ~/.config/sublime-text-2/Packages/Godef
     
 Windows:
 

@@ -15,18 +15,18 @@ class GodefCommand(sublime_plugin.WindowCommand):
       godefpath = os.path.join(path, "bin", "godef")
 
       if not os.path.isfile(godefpath):
-        print "WARN: godef not found at" + godefpath
+        # print "WARN: godef not found at" + godefpath
         continue
       else:
-        print "INFO: godef found at" + godefpath
+        # print "INFO: godef found at" + godefpath
         found = True
         break
 
     if found == False:
       print "ERROR: godef not found!"
       return
-    else:
-      print "using godef:" + godefpath
+    # else:
+    #   print "using godef:" + godefpath
 
     view = self.window.active_view()
     row, col = view.rowcol(view.sel()[0].begin())
@@ -42,7 +42,7 @@ class GodefCommand(sublime_plugin.WindowCommand):
       str(offset)
     ]
 
-    print "spawning: " + " ".join(args)
+    # print "spawning: " + " ".join(args)
 
     env = os.environ.copy()
     env["GOPATH"] = gopath
@@ -52,7 +52,7 @@ class GodefCommand(sublime_plugin.WindowCommand):
       print ("no definition found: " + stderr)
       return
 
-    print "godef output: " + output
+    # print "godef output: " + output
 
     location = output.decode("utf-8").rstrip().split(":")
 
@@ -61,7 +61,7 @@ class GodefCommand(sublime_plugin.WindowCommand):
     col = int(location[2])
 
     postion = (file + ":" + str(row) + ":" + str(col))
-    print("opening definition at " + postion)
+    # print("opening definition at " + postion)
     view = self.window.open_file(postion, sublime.ENCODED_POSITION)
     # view.show_at_center(region)
 
