@@ -25,12 +25,12 @@ Git clone this repository and place the entire `Godef` directory into your `Pack
 OSX:
 
     # Install the plugin
-    git clone git@github.com:buaazp/Godef.git ~/Library/Application\ Support/Sublime\ Text\ 2/Packages/Godef
+    git clone -b st2 git@github.com:buaazp/Godef.git ~/Library/Application\ Support/Sublime\ Text\ 2/Packages/Godef
 
 Linux:
 
     # Install the plugin
-    git clone git@github.com:buaazp/Godef.git ~/.config/sublime-text-2/Packages/Godef
+    git clone -b st2 git@github.com:buaazp/Godef.git ~/.config/sublime-text-2/Packages/Godef
     
 Windows:
 
