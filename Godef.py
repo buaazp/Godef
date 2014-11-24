@@ -5,7 +5,7 @@ class GodefCommand(sublime_plugin.WindowCommand):
     settings = sublime.load_settings("Godef.sublime-settings")
     gopath = settings.get("gopath", os.getenv('GOPATH'))
     if gopath is None:
-      print "ERROR: no GOPATH defined"
+      print("[Godef]ERROR: no GOPATH defined")
       return
 
     gopaths = gopath.split(":")
@@ -15,23 +15,34 @@ class GodefCommand(sublime_plugin.WindowCommand):
       godefpath = os.path.join(path, "bin", "godef")
 
       if not os.path.isfile(godefpath):
-        # print "WARN: godef not found at" + godefpath
+        print("[Godef]WARN: godef not found at" + godefpath)
         continue
       else:
-        # print "INFO: godef found at" + godefpath
+        print("[Godef]INFO: godef found at" + godefpath)
         found = True
         break
 
     if found == False:
-      print "ERROR: godef not found!"
+      print("[Godef]ERROR: godef not found!")
       return
-    # else:
-    #   print "using godef:" + godefpath
+    else:
+      print("[Godef]INFO: using godef:" + godefpath)
 
     view = self.window.active_view()
-    row, col = view.rowcol(view.sel()[0].begin())
 
-    offset = view.text_point(row, col)
+    # row, col = view.rowcol(view.sel()[0].begin())
+
+    # offset = view.text_point(row, col)
+
+    view = self.window.active_view()
+    select = view.sel()[0]
+    select_begin = select.begin()
+    select_before = sublime.Region(0, select_begin)
+    string_before = view.substr(select_before)
+    string_before.encode("utf-8")
+    buffer_before = bytearray(string_before, encoding = "utf8")
+    offset = len(buffer_before)
+
     filename = view.file_name()
 
     args = [
@@ -42,17 +53,17 @@ class GodefCommand(sublime_plugin.WindowCommand):
       str(offset)
     ]
 
-    # print "spawning: " + " ".join(args)
+    print("[Godef]INFO: spawning: " + " ".join(args))
 
     env = os.environ.copy()
     env["GOPATH"] = gopath
     p = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=env)
     output, stderr = p.communicate()
     if stderr:
-      print ("no definition found: " + stderr)
+      print("[Godef]ERROR: no definition found: " + stderr)
       return
 
-    # print "godef output: " + output
+    print("[Godef]INFO: godef output: " + str(output))
 
     location = output.decode("utf-8").rstrip().split(":")
 
@@ -61,7 +72,7 @@ class GodefCommand(sublime_plugin.WindowCommand):
     col = int(location[2])
 
     postion = (file + ":" + str(row) + ":" + str(col))
-    # print("opening definition at " + postion)
+    print("[Godef]INFO: opening definition at " + postion)
     view = self.window.open_file(postion, sublime.ENCODED_POSITION)
     # view.show_at_center(region)
 
