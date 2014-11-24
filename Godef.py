@@ -2,10 +2,12 @@ import sublime, sublime_plugin, subprocess, os, time
 
 class GodefCommand(sublime_plugin.WindowCommand):
   def run(self):
+    print("=================[Godef]Begin=================")
     settings = sublime.load_settings("Godef.sublime-settings")
     gopath = settings.get("gopath", os.getenv('GOPATH'))
     if gopath is None:
       print("[Godef]ERROR: no GOPATH defined")
+      print("=================[Godef] End =================")
       return
 
     gopaths = gopath.split(":")
@@ -24,6 +26,7 @@ class GodefCommand(sublime_plugin.WindowCommand):
 
     if found == False:
       print("[Godef]ERROR: godef not found!")
+      print("=================[Godef] End =================")
       return
     else:
       print("[Godef]INFO: using godef:" + godefpath)
@@ -42,6 +45,7 @@ class GodefCommand(sublime_plugin.WindowCommand):
     string_before.encode("utf-8")
     buffer_before = bytearray(string_before, encoding = "utf8")
     offset = len(buffer_before)
+    print("[Godef]INFO: selcet_begin: " + str(select_begin) + " offset: " + str(offset))
 
     filename = view.file_name()
 
@@ -60,7 +64,8 @@ class GodefCommand(sublime_plugin.WindowCommand):
     p = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=env)
     output, stderr = p.communicate()
     if stderr:
-      print("[Godef]ERROR: no definition found: " + stderr)
+      print("[Godef]ERROR: no definition found: " + str(stderr))
+      print("=================[Godef] End =================")
       return
 
     print("[Godef]INFO: godef output: " + str(output))
@@ -75,4 +80,5 @@ class GodefCommand(sublime_plugin.WindowCommand):
     print("[Godef]INFO: opening definition at " + postion)
     view = self.window.open_file(postion, sublime.ENCODED_POSITION)
     # view.show_at_center(region)
+    print("=================[Godef] End =================")
 
