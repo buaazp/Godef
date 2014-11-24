@@ -1,6 +1,6 @@
 # Godef
 
-This Sublime Text 3 [golang](golang.org) plugin adds a `godef` command which
+This Sublime Text 2/3 [golang](golang.org) plugin adds a `godef` command which
 uses [godef](http://godoc.org/code.google.com/p/rog-go/exp/cmd/godef) to find
 the definition under the cursor.
 
