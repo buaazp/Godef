@@ -68,17 +68,19 @@ class GodefCommand(sublime_plugin.WindowCommand):
       print("=================[Godef] End =================")
       return
 
-    print("[Godef]INFO: godef output: " + str(output))
-
     location = output.decode("utf-8").rstrip().split(":")
 
-    file = location[0]
-    row = int(location[1])
-    col = int(location[2])
+    if len(location) == 3:
+      print("[Godef]INFO: godef output: " + str(output))
+      file = location[0]
+      row = int(location[1])
+      col = int(location[2])
 
-    postion = (file + ":" + str(row) + ":" + str(col))
-    print("[Godef]INFO: opening definition at " + postion)
-    view = self.window.open_file(postion, sublime.ENCODED_POSITION)
-    # view.show_at_center(region)
+      postion = (file + ":" + str(row) + ":" + str(col))
+      print("[Godef]INFO: opening definition at " + postion)
+      view = self.window.open_file(postion, sublime.ENCODED_POSITION)
+      # view.show_at_center(region)
+    else:
+      print("[Godef]ERROR: godef output bad: " + str(output))
     print("=================[Godef] End =================")
 
