@@ -40,27 +40,11 @@
                             },
                             {
                                 "command": "open_file",
-                                "platform": "OSX",
-                                "args": {
-                                    "file": "${packages}/User/Default (OSX).sublime-keymap"
-                                },
-                                "caption": "Key Bindings – User"
-                            },
-                            {
-                                "command": "open_file",
                                 "platform": "Linux",
                                 "args": {
                                     "file": "${packages}/Godef/Default (Linux).sublime-keymap"
                                 },
                                 "caption": "Key Bindings – Default"
-                            },
-                            {
-                                "command": "open_file",
-                                "platform": "Linux",
-                                "args": {
-                                    "file": "${packages}/User/Default (Linux).sublime-keymap"
-                                },
-                                "caption": "Key Bindings – User"
                             },
                             { "caption": "-" },
                             {
