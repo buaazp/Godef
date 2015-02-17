@@ -46,6 +46,14 @@
                                 },
                                 "caption": "Key Bindings – Default"
                             },
+                            {
+                                "command": "open_file",
+                                "platform": "Windows",
+                                "args": {
+                                    "file": "${packages}/Godef/Default (Windows).sublime-keymap"
+                                },
+                                "caption": "Key Bindings – Default"
+                            },
                             { "caption": "-" },
                             {
                                 "caption": "Read Me",
