@@ -82,7 +82,7 @@ BAD:
 
 ### Key Bindings
 
-The default key of Godef is `gd`. Or click mouse left button while pressing `super/ctrl+alt`. You CAN of course change it by yourself. Here's an example key binding:
+The default key of Godef is `gd`. Don't be afraid. This key binding will NOT modify your codes. Just press it. Or you can goto the definition by clicking mouse left button while pressing `super/ctrl+alt`. You CAN of course change it by yourself. Here's an example key binding:
 
 ```
 { "keys": ["g","d"], "command": "godef" }
