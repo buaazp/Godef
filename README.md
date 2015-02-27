@@ -12,20 +12,17 @@ You can use this plugin working with [GoSublime](https://github.com/DisposaBoy/G
 
 The plugin assumes `godef` is present at `$GOPATH/bin/godef`. You need install `godef` first:
 
-<<<<<<< HEAD
 ```
 go get -v github.com/rogpeppe/godef
-=======
-    go get -v code.google.com/p/rog-go/exp/cmd/godef
+```
 
-NOTE: If you upgrade you golang version(i.e. from 1.4.1 to 1.4.2), you need to rebuild the `godef` to find the correct postion of runtime src:
+NOTE: If you upgrade you go runtime version, for example from 1.4.1 to 1.4.2, you need to rebuild the `godef` to find the correct postion of runtime src:
 
 ```
 cd $GOPATH/src/code.google.com/p/rog-go/exp/cmd/godef
 go clean -r -i
 go build -v
 go install -v
->>>>>>> fixed line ending problem in windows and change default keymap setting.
 ```
     
 #### Sublime Package Control
@@ -52,14 +49,7 @@ git clone git@github.com:buaazp/Godef.git ~/.config/sublime-text-3/Packages/Gode
     
 Windows:
 
-<<<<<<< HEAD
-```
-Currently not supported.
-```
-=======
-Now windows is been supported. Thanks for [@decker502](http://www.baidu.com/)'s work.  Please use the Sublime Package Control to install this plugin.
->>>>>>> fixed line ending problem in windows and change default keymap setting.
-
+Now windows is been supported. Thanks for [@decker502](https://github.com/decker502)'s work.  Please use the Sublime Package Control to install this plugin.
 
 ## Settings
 
