@@ -3,6 +3,13 @@ import sublime, sublime_plugin, subprocess, os, time, platform
 class GodefCommand(sublime_plugin.WindowCommand):
   def run(self):
     print("=================[Godef]Begin=================")
+    default_setting = sublime.load_settings("Preferences.sublime-settings")
+    # default_line_ending = default_setting.get("default_line_ending")
+    # print("[Godef]DEBUG: default_line_ending: " + default_line_ending)
+    default_setting.set("default_line_ending", "unix")
+    new_line_ending = default_setting.get("default_line_ending")
+    print("[Godef]INFO: new_line_ending: " + new_line_ending)
+
     settings = sublime.load_settings("Godef.sublime-settings")
     gopath = settings.get("gopath", os.getenv('GOPATH'))
     if gopath is None:
@@ -12,7 +19,7 @@ class GodefCommand(sublime_plugin.WindowCommand):
 
     systype = platform.system()
 
-    print("[Godef]INFO: sys type:" + systype)
+    # print("[Godef]DEBUG: system type:" + systype)
 
     if(systype == "Windows"):
       gopaths = gopath.split(";")

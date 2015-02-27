@@ -12,8 +12,20 @@ You can use this plugin working with [GoSublime](https://github.com/DisposaBoy/G
 
 The plugin assumes `godef` is present at `$GOPATH/bin/godef`. You need install `godef` first:
 
+<<<<<<< HEAD
 ```
 go get -v github.com/rogpeppe/godef
+=======
+    go get -v code.google.com/p/rog-go/exp/cmd/godef
+
+NOTE: If you upgrade you golang version(i.e. from 1.4.1 to 1.4.2), you need to rebuild the `godef` to find the correct postion of runtime src:
+
+```
+cd $GOPATH/src/code.google.com/p/rog-go/exp/cmd/godef
+go clean -r -i
+go build -v
+go install -v
+>>>>>>> fixed line ending problem in windows and change default keymap setting.
 ```
     
 #### Sublime Package Control
@@ -40,9 +52,13 @@ git clone git@github.com:buaazp/Godef.git ~/.config/sublime-text-3/Packages/Gode
     
 Windows:
 
+<<<<<<< HEAD
 ```
 Currently not supported.
 ```
+=======
+Now windows is been supported. Thanks for [@decker502](http://www.baidu.com/)'s work.  Please use the Sublime Package Control to install this plugin.
+>>>>>>> fixed line ending problem in windows and change default keymap setting.
 
 
 ## Settings
@@ -76,10 +92,10 @@ BAD:
 
 ### Key Bindings
 
-The default key of Godef is `super/ctrl+d`. You CAN of course change it by yourself. Here's an example key binding:
+The default key of Godef is `gd`. Or click mouse left button while pressing `super/ctrl+alt`. You CAN of course change it by yourself. Here's an example key binding:
 
 ```
-{ "keys": ["super+d"], "command": "godef" }
+{ "keys": ["g","d"], "command": "godef" }
 ```
 
 You can also add these two key-binding into your keymap file to jump between the postions. Using j/k is because I use vim mode. Change them by yourself:
