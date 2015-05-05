@@ -12,7 +12,7 @@ You can use this plugin working with [GoSublime](https://github.com/DisposaBoy/G
 
 The plugin assumes `godef` is present at `$GOPATH/bin/godef`. You need install `godef` first:
 
-    go get -v code.google.com/p/rog-go/exp/cmd/godef
+    go get -v github.com/rogpeppe/godef
     
 #### Sublime Package Control
 
