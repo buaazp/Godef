@@ -76,10 +76,10 @@ BAD:
 
 ### Key Bindings
 
-The default key of Godef is `super/ctrl+d`. You CAN of course change it by yourself. Here's an example key binding:
+The default key of Godef is `gd`. You CAN of course change it by yourself. Here's an example key binding:
 
 ```
-{ "keys": ["super+d"], "command": "godef" }
+{ "keys": ["super+h"], "command": "godef" }
 ```
 
 You can also add these two key-binding into your keymap file to jump between the postions. Using j/k is because I use vim mode. Change them by yourself:
