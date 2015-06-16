@@ -1,4 +1,4 @@
-import sublime, sublime_plugin, subprocess, os, time
+import sublime, sublime_plugin, subprocess, os, time, platform
 
 class GodefCommand(sublime_plugin.WindowCommand):
   def run(self):
@@ -10,12 +10,25 @@ class GodefCommand(sublime_plugin.WindowCommand):
       print("=================[Godef] End =================")
       return
 
-    gopaths = gopath.split(":")
+    systype = platform.system()
+
+    print("[Godef]INFO: sys type:" + systype)
+
+    if(systype == "Windows"):
+      gopaths = gopath.split(";")
+    else:
+      gopaths = gopath.split(":")
+
     found = False
     godefpath = ""
     for path in gopaths:
-      godefpath = os.path.join(path, "bin", "godef")
-
+      if(systype == "Windows"):
+        godefCmd = "godef.exe"
+      else:
+        godefCmd = "godef"
+      
+      godefpath = os.path.join(path, "bin", godefCmd)
+      
       if not os.path.isfile(godefpath):
         print("[Godef]WARN: godef not found at" + godefpath)
         continue
@@ -70,15 +83,23 @@ class GodefCommand(sublime_plugin.WindowCommand):
 
     location = output.decode("utf-8").rstrip().split(":")
 
-    if len(location) == 3:
-      print("[Godef]INFO: godef output: " + str(output))
-      file = location[0]
-      row = int(location[1])
-      col = int(location[2])
+    if(systype == "Windows"):
+      locationLen = 4
+    else:
+      locationLen = 3
 
-      postion = (file + ":" + str(row) + ":" + str(col))
-      print("[Godef]INFO: opening definition at " + postion)
-      view = self.window.open_file(postion, sublime.ENCODED_POSITION)
+    if len(location) == locationLen:
+      print("[Godef]INFO: godef output: " + str(output))
+      file = location[locationLen-3]
+      row = int(location[locationLen-2])
+      col = int(location[locationLen-1])
+
+      if(systype == "Windows"):
+        file = (location[0] + ":" + file)
+
+      position = (file + ":" + str(row) + ":" + str(col))
+      print("[Godef]INFO: opening definition at " + position)
+      view = self.window.open_file(position, sublime.ENCODED_POSITION)
       # view.show_at_center(region)
     else:
       print("[Godef]ERROR: godef output bad: " + str(output))
