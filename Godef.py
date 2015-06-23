@@ -5,32 +5,8 @@ class GodefCommand(sublime_plugin.WindowCommand):
     print("=================[Godef]Begin=================")
     settings = sublime.load_settings("Godef.sublime-settings")
     gopath = settings.get("gopath", os.getenv('GOPATH'))
-    if gopath is None:
-      print("[Godef]ERROR: no GOPATH defined")
-      print("=================[Godef] End =================")
-      return
-
-    gopaths = gopath.split(":")
-    found = False
-    godefpath = ""
-    for path in gopaths:
-      godefpath = os.path.join(path, "bin", "godef")
-
-      if not os.path.isfile(godefpath):
-        print("[Godef]WARN: godef not found at" + godefpath)
-        continue
-      else:
-        print("[Godef]INFO: godef found at" + godefpath)
-        found = True
-        break
-
-    if found == False:
-      print("[Godef]ERROR: godef not found!")
-      print("=================[Godef] End =================")
-      return
-    else:
-      print("[Godef]INFO: using godef:" + godefpath)
-
+    godefpath = "godef"
+    print("[Godef]INFO: using godef:" + godefpath)
     view = self.window.active_view()
 
     # row, col = view.rowcol(view.sel()[0].begin())
