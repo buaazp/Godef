@@ -76,9 +76,9 @@ class GodefCommand(sublime_plugin.WindowCommand):
       row = int(location[1])
       col = int(location[2])
 
-      postion = (file + ":" + str(row) + ":" + str(col))
-      print("[Godef]INFO: opening definition at " + postion)
-      view = self.window.open_file(postion, sublime.ENCODED_POSITION)
+      position = (file + ":" + str(row) + ":" + str(col))
+      print("[Godef]INFO: opening definition at " + position)
+      view = self.window.open_file(position, sublime.ENCODED_POSITION)
       # view.show_at_center(region)
     else:
       print("[Godef]ERROR: godef output bad: " + str(output))
