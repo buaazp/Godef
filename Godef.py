@@ -10,7 +10,7 @@ class GodefCommand(sublime_plugin.WindowCommand):
       print("=================[Godef] End =================")
       return
 
-    gopaths = gopath.split(":")
+    gopaths = gopath.split(os.pathsep)
     found = False
     godefpath = ""
     for path in gopaths:
@@ -68,7 +68,7 @@ class GodefCommand(sublime_plugin.WindowCommand):
       print("=================[Godef] End =================")
       return
 
-    location = output.decode("utf-8").rstrip().split(":")
+    location = output.decode("utf-8").rstrip().rsplit(":", 2)
 
     if len(location) == 3:
       print("[Godef]INFO: godef output: " + str(output))
