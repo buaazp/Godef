@@ -22,7 +22,12 @@ And then add gopath to the setting file before using this plugin.
 Here's an example Godef.sublime-settings:
 
 {
-    "gopath": "/Users/zippo/develop/go"
+    "gopath": "/Users/zippo/gopath"
+}
+
+// or if you use windows
+{
+    "gopath": "C:\\gopath"
 }
 
 NOTE: The value of gopath should be a absolute path. Multiple path like env
@@ -39,8 +44,10 @@ BAD:
 
 ********************************************************************************
 
-The default key of Godef is gd. You CAN of course change it by yourself.
-Here's an example key binding:
+The default key of Godef is gd, which is also the default key of godef plugin
+for vim.
+Or you can click left button while pressing super/ctrl+alt.
+You CAN of course change it by yourself. Here's an example key binding:
 
 {
     { "keys": ["super+h"], "command": "godef" }

@@ -1,0 +1,3 @@
+[
+    { "keys": ["g","d"], "command": "godef" }
+]
