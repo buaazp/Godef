@@ -1,0 +1,59 @@
+  _____   _____   _____   _____   _____  
+ /  ___| /  _  \ |  _  \ | ____| |  ___| 
+ | |     | | | | | | | | | |__   | |__   
+ | |  _  | | | | | | | | |  __|  |  __|  
+ | |_| | | |_| | | |_| | | |___  | |     
+ \_____/ \_____/ |_____/ |_____| |_|     
+
+Godef Plugin for Sublime Text 2/3
+https://github.com/buaazp/Godef
+
+********************************************************************************
+IMPORTANT: THE DEFAULT KEYMAP OF GODEF HAS CHANGED TO gd BECAUSE SUPER+D IS MORE
+USEFUL FOR EXPANDING SELECTION!!!
+********************************************************************************
+
+The plugin assumes godef is present at $GOPATH/bin/godef.
+You need install godef first:
+
+    go get -v github.com/rogpeppe/godef
+
+And then add gopath to the setting file before using this plugin.
+Here's an example Godef.sublime-settings:
+
+{
+    "gopath": "/Users/zippo/develop/go"
+}
+
+NOTE: The value of gopath should be a absolute path. Multiple path like env
+GOPATH are supported:
+
+GOOD:
+    "gopath": "/opt/golang:/Users/zippo/develop/GO"
+
+But relative path are not:
+
+BAD:
+    "gopath": "~/develop/GO"
+    "gopath": "$HOME/develop/GO"
+
+********************************************************************************
+
+The default key of Godef is gd. You CAN of course change it by yourself.
+Here's an example key binding:
+
+{
+    { "keys": ["super+h"], "command": "godef" }
+}
+
+You can also add these two key-binding into your keymap file to jump between the
+postions. Using j/k is because I use vim mode. Change them by yourself:
+
+{
+    { "keys": ["super+j"], "command": "jump_forward"},
+    { "keys": ["super+k"], "command": "jump_back"},
+}
+
+These two command only available in ST3.
+
+********************************************************************************
