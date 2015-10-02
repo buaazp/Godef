@@ -1,8 +1,6 @@
 # Godef
 
-This Sublime Text 2/3 [golang](http://golang.org/) plugin adds a `godef` command which
-uses [godef](http://godoc.org/code.google.com/p/rog-go/exp/cmd/godef) to find
-the definition under the cursor.
+This Sublime Text 2/3 [golang](http://golang.org/) plugin adds a `godef` command which uses [godef](http://godoc.org/github.com/rogpeppe/godef) to find the definition under the cursor.
 
 #### Compatible with GoSublime
 
@@ -19,9 +17,8 @@ go get -v github.com/rogpeppe/godef
 NOTE: If you upgrade you go runtime version, for example from 1.4.1 to 1.4.2, you need to rebuild the `godef` to find the correct postion of runtime src:
 
 ```
-cd $GOPATH/src/code.google.com/p/rog-go/exp/cmd/godef
+cd $GOPATH/src/github.com/rogpeppe/godef
 go clean -r -i
-go build -v
 go install -v
 ```
     
@@ -49,7 +46,7 @@ git clone git@github.com:buaazp/Godef.git ~/.config/sublime-text-3/Packages/Gode
     
 Windows:
 
-Now windows is been supported. Thanks for [@decker502](https://github.com/decker502)'s work.  Please use the Sublime Package Control to install this plugin.
+Now windows is been supported. Thanks for [@decker502](https://github.com/decker502) and [@mattn](https://github.com/mattn)'s work.  Please use the Sublime Package Control to install this plugin.
 
 ## Settings
 
@@ -59,11 +56,16 @@ You need to add gopath to the setting file before using this plugin. Here's an e
 
 ```
 {
-    "gopath": "/Users/zippo/develop/GO"
+    "gopath": "/Users/zippo/gopath"
+}
+
+// or if you use windows
+{
+    "gopath": "C:\\gopath"
 }
 ```
 
-NOTE: The value of `gopath` should be a absolute path. Multiple path like env `GOPATH` are supported but relative path are not:
+NOTE: The value of `gopath` should be absolute path. Multiple path like env `GOPATH` are supported but relative path are not:
 
 ```
 GOOD:
@@ -82,7 +84,9 @@ BAD:
 
 ### Key Bindings
 
-The default key of Godef is `gd`. Don't be afraid. This key binding will NOT modify your codes. Just press it. Or you can goto the definition by clicking mouse left button while pressing `super/ctrl+alt`. You CAN of course change it by yourself. Here's an example key binding:
+The default key of Godef is `gd`, which is also the default key of godef plugin for vim. Don't be afraid. This key binding will NOT modify your codes. Just press it.
+
+Or you can click left button while pressing `super/ctrl+alt`. You CAN of course change it by yourself. Here's an example key binding:
 
 ```
 { "keys": ["super+h"], "command": "godef" }

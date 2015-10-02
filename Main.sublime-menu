@@ -54,12 +54,85 @@
                                 },
                                 "caption": "Key Bindings – Default"
                             },
+                            {
+                                "command": "open_file",
+                                "platform": "OSX",
+                                "args": {
+                                    "file": "${packages}/User/Default (OSX).sublime-keymap"
+                                },
+                                "caption": "Key Bindings – User"
+                            },
+                            {
+                                "command": "open_file",
+                                "platform": "Linux",
+                                "args": {
+                                    "file": "${packages}/User/Default (Linux).sublime-keymap"
+                                },
+                                "caption": "Key Bindings – User"
+                            },
+                            {
+                                "command": "open_file",
+                                "platform": "Windows",
+                                "args": {
+                                    "file": "${packages}/User/Default (Windows).sublime-keymap"
+                                },
+                                "caption": "Key Bindings – User"
+                            },
+                            { "caption": "-" },
+                            {
+                                "command": "open_file",
+                                "platform": "OSX",
+                                "args": {
+                                    "file": "${packages}/Godef/Default (OSX).sublime-mousemap"
+                                },
+                                "caption": "Mouse Bindings – Default"
+                            },
+                            {
+                                "command": "open_file",
+                                "platform": "Linux",
+                                "args": {
+                                    "file": "${packages}/Godef/Default (Linux).sublime-mousemap"
+                                },
+                                "caption": "Mouse Bindings – Default"
+                            },
+                            {
+                                "command": "open_file",
+                                "platform": "Windows",
+                                "args": {
+                                    "file": "${packages}/Godef/Default (Windows).sublime-mousemap"
+                                },
+                                "caption": "Mouse Bindings – Default"
+                            },
+                            {
+                                "command": "open_file",
+                                "platform": "OSX",
+                                "args": {
+                                    "file": "${packages}/User/Default (OSX).sublime-mousemap"
+                                },
+                                "caption": "Mouse Bindings – User"
+                            },
+                            {
+                                "command": "open_file",
+                                "platform": "Linux",
+                                "args": {
+                                    "file": "${packages}/User/Default (Linux).sublime-mousemap"
+                                },
+                                "caption": "Mouse Bindings – User"
+                            },
+                            {
+                                "command": "open_file",
+                                "platform": "Windows",
+                                "args": {
+                                    "file": "${packages}/User/Default (Windows).sublime-mousemap"
+                                },
+                                "caption": "Mouse Bindings – User"
+                            },
                             { "caption": "-" },
                             {
                                 "caption": "Read Me",
                                 "command": "open_file",
                                 "args": {
-                                    "file": "${packages}/Godef/README.md"
+                                    "file": "${packages}/Godef/messages/install.txt"
                                 }
                             }
                         ]

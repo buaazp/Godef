@@ -2,5 +2,7 @@
 	// Copy this file to Settings - User
 	// Set your real GOPATH in user's Godef.sublime-settings
 	// For example:
-	//"gopath": "/Users/zippo/develop/GO"
+	// "gopath": "/Users/zippo/gopath"
+	// or if you use windows
+	// "gopath": "C:\\gopath"
 }
