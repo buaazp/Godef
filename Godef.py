@@ -3,6 +3,7 @@ import sublime_plugin
 import subprocess
 import os
 import platform
+import sys
 
 
 class GodefCommand(sublime_plugin.WindowCommand):
@@ -59,6 +60,13 @@ class GodefCommand(sublime_plugin.WindowCommand):
         args = [godefpath, "-f", filename, "-o", str(offset)]
         print("[Godef]INFO: spawning: %s" % " ".join(args))
         env = os.environ.copy()
+        # a weird bug on windows. sometimes unicode strings end up in the
+        # environment and subprocess.call does not like this, encode them
+        # to latin1 and continue.
+        if systype == "Windows":
+            if sys.version_info[0] == 2:
+                if isinstance(gopath, unicode):
+                    gopath = gopath.encode('iso-8859-1')
         env["GOPATH"] = gopath
         p = subprocess.Popen(args, stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE, env=env)
