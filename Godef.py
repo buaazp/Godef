@@ -14,8 +14,8 @@ class GodefCommand(sublime_plugin.WindowCommand):
         # default_line_ending = default_setting.get("default_line_ending")
         # print("[Godef]DEBUG: default_line_ending: %s" % default_line_ending)
         default_setting.set("default_line_ending", "unix")
-        new_line_ending = default_setting.get("default_line_ending")
-        print("[Godef]INFO: line_ending: %s" % new_line_ending)
+        # new_line_ending = default_setting.get("default_line_ending")
+        # print("[Godef]DEBUG: line_ending: %s" % new_line_ending)
 
         settings = sublime.load_settings("Godef.sublime-settings")
         gopath = settings.get("gopath", os.getenv('GOPATH'))
@@ -37,7 +37,6 @@ class GodefCommand(sublime_plugin.WindowCommand):
                 print("[Godef]WARN: godef not found at %s" % godefpath)
                 continue
             else:
-                print("[Godef]INFO: godef found at %s" % godefpath)
                 found = True
                 break
         if not found:
@@ -45,6 +44,23 @@ class GodefCommand(sublime_plugin.WindowCommand):
             print("=================[Godef] End =================")
             return
         print("[Godef]INFO: using godef: %s" % godefpath)
+
+        goroot = settings.get("goroot", os.getenv('GOROOT'))
+        if not goroot:
+            print("[Godef]WARN: no GOROOT defined")
+        # a weird bug on windows. sometimes unicode strings end up in the
+        # environment and subprocess.call does not like this, encode them
+        # to latin1 and continue.
+        env = os.environ.copy()
+        if systype == "Windows":
+            if sys.version_info[0] == 2:
+                if gopath and isinstance(gopath, unicode):
+                    gopath = gopath.encode('iso-8859-1')
+                if goroot and isinstance(goroot, unicode):
+                    goroot = goroot.encode('iso-8859-1')
+        env["GOPATH"] = gopath
+        if goroot:
+            env["GOROOT"] = goroot
 
         view = self.window.active_view()
         filename = view.file_name()
@@ -59,20 +75,14 @@ class GodefCommand(sublime_plugin.WindowCommand):
               (str(select_begin), str(offset)))
         args = [godefpath, "-f", filename, "-o", str(offset)]
         print("[Godef]INFO: spawning: %s" % " ".join(args))
-        env = os.environ.copy()
-        # a weird bug on windows. sometimes unicode strings end up in the
-        # environment and subprocess.call does not like this, encode them
-        # to latin1 and continue.
-        if systype == "Windows":
-            if sys.version_info[0] == 2:
-                if isinstance(gopath, unicode):
-                    gopath = gopath.encode('iso-8859-1')
-        env["GOPATH"] = gopath
+
         p = subprocess.Popen(args, stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE, env=env)
         output, stderr = p.communicate()
         if stderr:
             print("[Godef]ERROR: no definition found: %s" % str(stderr))
+            if not goroot:
+                print("[Godef]ERROR: maybe no GOROOT defined in settings")
             print("=================[Godef] End =================")
             return
 

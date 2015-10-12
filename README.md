@@ -50,22 +50,24 @@ Now windows is been supported. Thanks for [@decker502](https://github.com/decker
 
 ## Settings
 
-### Configuring `GOPATH`
+### Configuring `GOPATH` and `GOROOT`
 
-You need to add gopath to the setting file before using this plugin. Here's an example `Godef.sublime-settings`:
+In most cases, you needn't set anything after installing. But if your `Godef` don't work you need to add gopath and goroot into the setting file before using this plugin. Here's an example `Godef.sublime-settings`:
 
 ```
 {
-    "gopath": "/Users/zippo/gopath"
+	"goroot": "/Users/zippo/Go",
+	"gopath": "/Users/zippo/gopath"
 }
 
 // or if you use windows
 {
-    "gopath": "C:\\gopath"
+	"goroot": "C:\\Go",
+	"gopath": "C:\\gopath"
 }
 ```
 
-NOTE: The value of `gopath` should be absolute path. Multiple path like env `GOPATH` are supported but relative path are not:
+NOTE: The value of `gopath/goroot` should be absolute path. Multiple path like env `GOPATH` are supported but relative path are not:
 
 ```
 GOOD:
@@ -76,10 +78,10 @@ BAD:
 "gopath": "$HOME/develop/GO"
 ```
 
- This plugin will determine `GOPATH` from either:
+ This plugin will determine `GOPATH/GOROOT` from either:
 
-1. The `gopath` value from `Godef.sublime-settings`
-2. The `GOPATH` environment variable
+1. The `gopath/goroot` value from `Godef.sublime-settings`
+2. The `GOPATH/GOROOT` environment variable
 
 
 ### Key Bindings

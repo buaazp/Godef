@@ -9,7 +9,12 @@ Godef Plugin for Sublime Text 2/3
 https://github.com/buaazp/Godef
 
 ********************************************************************************
-IMPORTANT: THE DEFAULT KEYMAP OF GODEF HAS CHANGED TO gd BECAUSE SUPER+D IS MORE
+IMPORTANT: IF YOUR PLUGIN DON'T WORK, YOU NEED ADD gopath AND goroot INTO THE
+SETTING FILE!!!
+
+WINDOWS NOW IS SUPPORTED!
+
+THE DEFAULT KEYMAP OF GODEF HAS CHANGED TO gd BECAUSE SUPER+D IS MORE
 USEFUL FOR EXPANDING SELECTION!!!
 ********************************************************************************
 
@@ -22,11 +27,13 @@ And then add gopath to the setting file before using this plugin.
 Here's an example Godef.sublime-settings:
 
 {
+    "goroot": "/Users/zippo/Go",
     "gopath": "/Users/zippo/gopath"
 }
 
 // or if you use windows
 {
+    "goroot": "C:\\Go",
     "gopath": "C:\\gopath"
 }
 
