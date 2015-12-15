@@ -76,8 +76,13 @@ class GodefCommand(sublime_plugin.WindowCommand):
         args = [godefpath, "-f", filename, "-o", str(offset)]
         print("[Godef]INFO: spawning: %s" % " ".join(args))
 
+        startupinfo = None
+        if os.name == 'nt':
+            startupinfo = subprocess.STARTUPINFO()
+            startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
         p = subprocess.Popen(args, stdout=subprocess.PIPE,
-                             stderr=subprocess.PIPE, env=env)
+                             stderr=subprocess.PIPE, env=env,
+                             startupinfo=startupinfo)
         output, stderr = p.communicate()
         if stderr:
             print("[Godef]ERROR: no definition found: %s" % str(stderr))
