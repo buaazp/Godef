@@ -6,5 +6,7 @@
 	// "gopath": "/Users/zippo/develop/GO"
 	// or if you use windows
 	// "goroot": "C:\\Go",
-	// "gopath": "C:\\gopath"
+	// "gopath": "C:\\gopath",
+	// For activating vendor experiment
+	//"GO15VENDOREXPERIMENT": "1"
 }
