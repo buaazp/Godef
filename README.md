@@ -21,7 +21,7 @@ cd $GOPATH/src/github.com/rogpeppe/godef
 go clean -r -i
 go install -v
 ```
-    
+
 #### Sublime Package Control
 
 If you are using [Sublime Package Control](http://wbond.net/sublime_packages/package_control) you can simply install Sublime Godef by searching for `Godef` in the package listing.
@@ -43,7 +43,7 @@ Linux:
 # Install the plugin
 git clone git@github.com:buaazp/Godef.git ~/.config/sublime-text-3/Packages/Godef
 ```
-    
+
 Windows:
 
 Now windows is been supported. Thanks for [@decker502](https://github.com/decker502) and [@mattn](https://github.com/mattn)'s work.  Please use the Sublime Package Control to install this plugin.
@@ -82,6 +82,20 @@ BAD:
 
 1. The `gopath/goroot` value from `Godef.sublime-settings`
 2. The `GOPATH/GOROOT` environment variable
+
+NOTE 2: In case your plugin can't resolve internals, add the installed library path to your gopath (notice the last part):
+
+```
+"gopath": "/opt/golang:/Users/zippo/develop/GO:/usr/lib/go"
+```
+
+#### Vendor Experiment
+
+Add this to your configurations:
+```
+"GO15VENDOREXPERIMENT": "1",
+```
+
 
 
 ### Key Bindings

@@ -19,6 +19,7 @@ class GodefCommand(sublime_plugin.WindowCommand):
 
         settings = sublime.load_settings("Godef.sublime-settings")
         gopath = settings.get("gopath", os.getenv('GOPATH'))
+
         if not gopath:
             print("[Godef]ERROR: no GOPATH defined")
             print("=================[Godef] End =================")
@@ -48,6 +49,7 @@ class GodefCommand(sublime_plugin.WindowCommand):
         goroot = settings.get("goroot", os.getenv('GOROOT'))
         if not goroot:
             print("[Godef]WARN: no GOROOT defined")
+
         # a weird bug on windows. sometimes unicode strings end up in the
         # environment and subprocess.call does not like this, encode them
         # to latin1 and continue.
@@ -61,6 +63,11 @@ class GodefCommand(sublime_plugin.WindowCommand):
         env["GOPATH"] = gopath
         if goroot:
             env["GOROOT"] = goroot
+
+        vendorExperiment = settings.get("GO15VENDOREXPERIMENT", os.getenv('GO15VENDOREXPERIMENT')) == "1"
+        if vendorExperiment:
+            print("[Godef]INFO: running with GO15VENDOREXPERIMENT enabled")
+            env["GO15VENDOREXPERIMENT"] = "1"
 
         view = self.window.active_view()
         filename = view.file_name()
