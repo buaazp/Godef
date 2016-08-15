@@ -7,8 +7,11 @@ This Sublime Text 2/3 [golang](http://golang.org/) plugin adds a `godef` command
 You can use this plugin working with [GoSublime](https://github.com/DisposaBoy/GoSublime) because GoSublime is not support `guru/godef`.
 
 > This plugin support two different modes to find the definition of symbles:
+> 
 > `guru` tool offers improved definition lookups which are compatible with Go 1.5+ vendoring.
+> 
 > `godef` offers faster speed. But cannot find correct definition if the package name is not matched with import path: [rogpeppe/godef#40](https://github.com/rogpeppe/godef/issues/40)
+> 
 > The default mode is `guru`. You can change it in your setting.
 
 ## Installation
