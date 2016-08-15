@@ -1,25 +1,27 @@
 # Godef
 
-This Sublime Text 2/3 [golang](http://golang.org/) plugin adds a `godef` command which uses [godef](http://godoc.org/github.com/rogpeppe/godef) to find the definition under the cursor.
+This Sublime Text 2/3 [golang](http://golang.org/) plugin adds a `godef` command which uses [guru](http://godoc.org/golang.org/x/tools/cmd/guru) or [godef](http://godoc.org/github.com/rogpeppe/godef) to find the definition under the cursor.
 
 #### Compatible with GoSublime
 
-You can use this plugin working with [GoSublime](https://github.com/DisposaBoy/GoSublime) because GoSublime is not support `godef`.
+You can use this plugin working with [GoSublime](https://github.com/DisposaBoy/GoSublime) because GoSublime is not support `guru/godef`.
+
+> This plugin support two different modes to find the definition of symbles:
+> `guru` tool offers improved definition lookups which are compatible with Go 1.5+ vendoring.
+> `godef` offers faster speed. But cannot find correct definition if the package name is not matched with import path: [rogpeppe/godef#40](https://github.com/rogpeppe/godef/issues/40)
+> The default mode is `guru`. You can change it in your setting.
 
 ## Installation
 
-The plugin assumes `godef` is present at `$GOPATH/bin/godef`. You need install `godef` first:
+The plugin assumes `guru` is present at `$GOPATH/bin/guru`. You need install `guru` first:
+
+```
+go get -v golang.org/x/tools/cmd/guru
+```
+Or if you choose mode godef, plugin assumes `godef` is present at `$GOPATH/bin/godef`. You need install `godef` first:
 
 ```
 go get -v github.com/rogpeppe/godef
-```
-
-NOTE: If you upgrade you go runtime version, for example from 1.4.1 to 1.4.2, you need to rebuild the `godef` to find the correct postion of runtime src:
-
-```
-cd $GOPATH/src/github.com/rogpeppe/godef
-go clean -r -i
-go install -v
 ```
 
 #### Sublime Package Control
@@ -89,15 +91,6 @@ NOTE 2: In case your plugin can't resolve internals, add the installed library p
 "gopath": "/opt/golang:/Users/zippo/develop/GO:/usr/lib/go"
 ```
 
-#### Vendor Experiment
-
-Add this to your configurations:
-```
-"GO15VENDOREXPERIMENT": "1",
-```
-
-
-
 ### Key Bindings
 
 The default key of Godef is `gd`, which is also the default key of godef plugin for vim. Don't be afraid. This key binding will NOT modify your codes. Just press it.
@@ -114,8 +107,21 @@ You can also add these two key-binding into your keymap file to jump between the
 { "keys": ["super+j"], "command": "jump_forward"},
 { "keys": ["super+k"], "command": "jump_back"},
 ```
+These two command only available in ST3.
 
 Enjoy it!
+
+## Godef doesn't work
+
+There are so many reasons lead to `godef` fails. If that happens, do these:
+
+1. upgrade your plugin to the latest version.
+2. press `ctrl + ~` to open the sublime console, then press godef shortcut key again.
+3. logs in the console will show you the reason why `godef` is not work.
+4. follow the logs and adjust your settings.
+5. check if your `GOPATH/GOROOT` is right in settings.
+6. choose `guru` mode if necessary.
+7. open an issue and paste the logs in it.
 
 ## License
 

@@ -4,10 +4,10 @@ import subprocess
 import os
 import platform
 import sys
+import json
 
 
 class GodefCommand(sublime_plugin.WindowCommand):
-
     def run(self):
         print("=================[Godef]Begin=================")
         default_setting = sublime.load_settings("Preferences.sublime-settings")
@@ -19,6 +19,12 @@ class GodefCommand(sublime_plugin.WindowCommand):
 
         settings = sublime.load_settings("Godef.sublime-settings")
         gopath = settings.get("gopath", os.getenv('GOPATH'))
+        mode = settings.get("mode", 'guru')
+
+        if mode not in ['guru', 'godef']:
+            print("[Godef]ERROR: unsupported mode: %s" % mode)
+            print("=================[Godef] End =================")
+            return
 
         if not gopath:
             print("[Godef]ERROR: no GOPATH defined")
@@ -28,23 +34,26 @@ class GodefCommand(sublime_plugin.WindowCommand):
         systype = platform.system()
         # print("[Godef]DEBUG: system type: %s" % systype)
         if systype == "Windows":
-            godefCmd = "godef.exe"
+            godefCmd = mode + ".exe"
         else:
-            godefCmd = "godef"
+            godefCmd = mode
         gopaths = gopath.split(os.pathsep)
         for go_path in gopaths:
             godefpath = os.path.join(go_path, "bin", godefCmd)
             if not os.path.isfile(godefpath):
-                print("[Godef]WARN: godef not found at %s" % godefpath)
+                print('[Godef]WARN: "%s" cmd not found at %s' % (mode, godefpath))
                 continue
             else:
                 found = True
                 break
         if not found:
-            print("[Godef]ERROR: godef not found!")
+            print('[Godef]ERROR: "%s" cmd is not available.\n\
+                   Use "go get -u golang.org/x/tools/cmd/guru"\n\
+                   or "go get -u github.com/rogpeppe/godef"\n\
+                   to install.' % mode)
             print("=================[Godef] End =================")
             return
-        print("[Godef]INFO: using godef: %s" % godefpath)
+        print("[Godef]INFO: using cmd: %s" % godefpath)
 
         goroot = settings.get("goroot", os.getenv('GOROOT'))
         if not goroot:
@@ -64,11 +73,6 @@ class GodefCommand(sublime_plugin.WindowCommand):
         if goroot:
             env["GOROOT"] = goroot
 
-        vendorExperiment = settings.get("GO15VENDOREXPERIMENT", os.getenv('GO15VENDOREXPERIMENT')) == "1"
-        if vendorExperiment:
-            print("[Godef]INFO: running with GO15VENDOREXPERIMENT enabled")
-            env["GO15VENDOREXPERIMENT"] = "1"
-
         view = self.window.active_view()
         filename = view.file_name()
         select = view.sel()[0]
@@ -80,7 +84,10 @@ class GodefCommand(sublime_plugin.WindowCommand):
         offset = len(buffer_before)
         print("[Godef]INFO: selcet_begin: %s offset: %s" %
               (str(select_begin), str(offset)))
-        args = [godefpath, "-f", filename, "-o", str(offset)]
+        if mode == 'guru':
+            args = [godefpath, "-json", 'definition', filename + ":#" + str(offset)]
+        else:
+            args = [godefpath, "-f", filename, "-o", str(offset)]
         print("[Godef]INFO: spawning: %s" % " ".join(args))
 
         startupinfo = None
@@ -92,22 +99,23 @@ class GodefCommand(sublime_plugin.WindowCommand):
                              startupinfo=startupinfo)
         output, stderr = p.communicate()
         if stderr:
-            print("[Godef]ERROR: no definition found: %s" % str(stderr))
+            err = stderr.decode("utf-8").rstrip()
+            print("[Godef]ERROR: %s" % err)
+            if mode != 'guru':
+                print('[Godef]ERROR: maybe you can use recommended mode "guru" in settings')
             if not goroot:
                 print("[Godef]ERROR: maybe no GOROOT defined in settings")
             print("=================[Godef] End =================")
             return
 
-        location = output.decode("utf-8").rstrip().rsplit(":", 2)
-        if len(location) == 3:
-            print("[Godef]INFO: godef output: %s" % str(output))
-            file = location[0]
-            row = int(location[1])
-            col = int(location[2])
-
-            position = file + ":" + str(row) + ":" + str(col)
-            print("[Godef]INFO: opening definition at %s" % position)
-            view = self.window.open_file(position, sublime.ENCODED_POSITION)
-        else:
-            print("[Godef]ERROR: godef output bad: %s" % str(output))
+        position = output.decode("utf-8").rstrip()
+        print("[Godef]INFO: %s output:\n%s" % (mode, position))
+        if mode == 'guru':
+            definition = json.loads(position)
+            if 'objpos' not in definition:
+                print("[Godef]ERROR: guru result josn unmarshal err")
+            else:
+                position = definition['objpos']
+        print("[Godef]INFO: opening definition at %s" % position)
+        view = self.window.open_file(position, sublime.ENCODED_POSITION)
         print("=================[Godef] End =================")
