@@ -8,8 +8,21 @@ import json
 
 
 class GodefCommand(sublime_plugin.WindowCommand):
-    def run(self):
-        print("=================[Godef]Begin=================")
+    """
+    Godef command class
+    use godef to find definition first,
+    if not found, use guru to find again.
+    """
+
+    def __init__(self, window):
+        self.cmdpaths = None
+        self.goroot = None
+        self.env = None
+        self.load()
+        super().__init__(window)
+
+    def load(self):
+        print("===============[Godef]Init Begin==============")
         default_setting = sublime.load_settings("Preferences.sublime-settings")
         # default_line_ending = default_setting.get("default_line_ending")
         # print("[Godef]DEBUG: default_line_ending: %s" % default_line_ending)
@@ -19,41 +32,43 @@ class GodefCommand(sublime_plugin.WindowCommand):
 
         settings = sublime.load_settings("Godef.sublime-settings")
         gopath = settings.get("gopath", os.getenv('GOPATH'))
-        mode = settings.get("mode", 'guru')
-
-        if mode not in ['guru', 'godef']:
-            print("[Godef]ERROR: unsupported mode: %s" % mode)
-            print("=================[Godef] End =================")
-            return
 
         if not gopath:
             print("[Godef]ERROR: no GOPATH defined")
-            print("=================[Godef] End =================")
-            return
+            print("===============[Godef] Init End===============")
+            return False
 
+        cmdpaths = []
         systype = platform.system()
         # print("[Godef]DEBUG: system type: %s" % systype)
-        if systype == "Windows":
-            godefCmd = mode + ".exe"
-        else:
-            godefCmd = mode
-        gopaths = gopath.split(os.pathsep)
-        for go_path in gopaths:
-            godefpath = os.path.join(go_path, "bin", godefCmd)
-            if not os.path.isfile(godefpath):
-                print('[Godef]WARN: "%s" cmd not found at %s' % (mode, godefpath))
-                continue
+        for cmd in ['godef', 'guru']:
+            found = False
+            if systype == "Windows":
+                binary = cmd + ".exe"
             else:
-                found = True
-                break
-        if not found:
-            print('[Godef]ERROR: "%s" cmd is not available.\n\
-                   Use "go get -u golang.org/x/tools/cmd/guru"\n\
-                   or "go get -u github.com/rogpeppe/godef"\n\
-                   to install.' % mode)
-            print("=================[Godef] End =================")
-            return
-        print("[Godef]INFO: using cmd: %s" % godefpath)
+                binary = cmd
+            gopaths = gopath.split(os.pathsep)
+            for go_path in gopaths:
+                cmdpath = os.path.join(go_path, "bin", binary)
+                if not os.path.isfile(cmdpath):
+                    print('[Godef]WARN: "%s" cmd not found at %s' % (cmd, go_path))
+                    continue
+                else:
+                    found = True
+                    break
+            if not found:
+                print('[Godef]WARN: "%s" cmd is not available.' % cmd)
+                continue
+            print('[Godef]INFO: found "%s" at %s' % (cmd, cmdpath))
+            cmdpaths.append({'mode': cmd, 'path': cmdpath})
+
+        if len(cmdpaths) == 0:
+            print('[Godef]ERROR: godef/guru are not available.\n\
+                   Use "go get -u github.com/rogpeppe/godef"\n\
+                   and "go get -u golang.org/x/tools/cmd/guru"\n\
+                   to install them.')
+            print("===============[Godef] Init End===============")
+            return False
 
         goroot = settings.get("goroot", os.getenv('GOROOT'))
         if not goroot:
@@ -73,6 +88,17 @@ class GodefCommand(sublime_plugin.WindowCommand):
         if goroot:
             env["GOROOT"] = goroot
 
+        self.cmdpaths = cmdpaths
+        self.goroot = goroot
+        self.env = env
+        print("===============[Godef] Init End===============")
+        return True
+
+    def run(self):
+        if not self.cmdpaths and not self.load():
+            return
+
+        print("=================[Godef]Begin=================")
         view = self.window.active_view()
         filename = view.file_name()
         select = view.sel()[0]
@@ -84,33 +110,51 @@ class GodefCommand(sublime_plugin.WindowCommand):
         offset = len(buffer_before)
         print("[Godef]INFO: selcet_begin: %s offset: %s" %
               (str(select_begin), str(offset)))
-        if mode == 'guru':
-            args = [godefpath, "-json", 'definition', filename + ":#" + str(offset)]
-        else:
-            args = [godefpath, "-f", filename, "-o", str(offset)]
-        print("[Godef]INFO: spawning: %s" % " ".join(args))
 
-        startupinfo = None
-        if os.name == 'nt':
-            startupinfo = subprocess.STARTUPINFO()
-            startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-        p = subprocess.Popen(args, stdout=subprocess.PIPE,
-                             stderr=subprocess.PIPE, env=env,
-                             startupinfo=startupinfo)
-        output, stderr = p.communicate()
-        if stderr:
-            err = stderr.decode("utf-8").rstrip()
-            print("[Godef]ERROR: %s" % err)
-            if mode != 'guru':
-                print('[Godef]ERROR: maybe you can use recommended mode "guru" in settings')
-            if not goroot:
+        output = None
+        succ = None
+        for d in self.cmdpaths:
+            if 'godef' == d['mode']:
+                args = [d['path'], "-f", filename, "-o", str(offset)]
+            else:
+                args = [d['path'], "-json", 'definition', filename + ":#" + str(offset)]
+            print("[Godef]INFO: spawning: %s" % " ".join(args))
+
+            startupinfo = None
+            if os.name == 'nt':
+                startupinfo = subprocess.STARTUPINFO()
+                startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+            stderr = None
+            try:
+                p = subprocess.Popen(args, stdout=subprocess.PIPE,
+                                     stderr=subprocess.PIPE, env=self.env,
+                                     startupinfo=startupinfo)
+                output, stderr = p.communicate()
+            except Exception as e:
+                print("[Godef]EXPT: %s fail: %s setting need reload" % (d['mode'], e))
+                self.cmdpaths = None
+                print("=================[Godef] End =================")
+                return
+            if stderr:
+                err = stderr.decode("utf-8").rstrip()
+                print("[Godef]ERROR: %s fail: %s" % (d['mode'], err))
+                continue
+                output = None
+            else:
+                succ = d
+                break
+
+        if not output:
+            if len(self.cmdpaths) == 1 and 'godef' == self.cmdpaths[0]['mode']:
+                print('[Godef]ERROR: maybe you can install cmd "guru" and try again')
+            if not self.goroot:
                 print("[Godef]ERROR: maybe no GOROOT defined in settings")
             print("=================[Godef] End =================")
             return
 
         position = output.decode("utf-8").rstrip()
-        print("[Godef]INFO: %s output:\n%s" % (mode, position))
-        if mode == 'guru':
+        print("[Godef]INFO: %s output:\n%s" % (succ['mode'], position))
+        if succ['mode'] == 'guru':
             definition = json.loads(position)
             if 'objpos' not in definition:
                 print("[Godef]ERROR: guru result josn unmarshal err")

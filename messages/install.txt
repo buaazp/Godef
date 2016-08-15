@@ -9,8 +9,10 @@ Godef Plugin for Sublime Text 2/3
 https://github.com/buaazp/Godef
 
 ********************************************************************************
-IMPORTANT: WE USE GURU AS THE DEFAULT COMMAND NOW, YOU NEED TO INSTALL GURU FIRST:
-go get -v golang.org/x/tools/cmd/guru
+IMPORTANT: WE USE GURU IF GODEF FAILED, YOU NEED TO INSTALL THEM FIRST:
+
+    go get -v github.com/rogpeppe/godef
+    go get -v golang.org/x/tools/cmd/guru
 
 WINDOWS NOW IS SUPPORTED!
 
@@ -21,12 +23,11 @@ USEFUL FOR EXPANDING SELECTION!!!
 There are so many reasons lead to GODEF fails. If that happens, do these:
 
 1. upgrade your plugin to the latest version.
-2. press `ctrl + ~` to open the sublime console, then press godef shortcut key again.
+2. press `ctrl + ~` to open the console, then press godef shortcut key again.
 3. logs in the console will show you the reason why `godef` is not work.
 4. follow the logs and adjust your settings.
 5. check if your `GOPATH/GOROOT` is right in settings.
-6. choose `guru` mode if necessary.
-7. open an issue and paste the logs in it.
+6. open an issue and paste the logs in it.
 
 ********************************************************************************
 

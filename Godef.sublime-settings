@@ -9,9 +9,4 @@
 	// Or if you use windows
 	// "goroot": "C:\\Go",
 	// "gopath": "C:\\gopath",
-
-	// Then choose cmd mode in [guru, godef]
-	// guru is more adaptable,
-	// while godef is faster.
-	"mode": "guru"
 }

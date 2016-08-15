@@ -1,30 +1,26 @@
 # Godef
 
-This Sublime Text 2/3 [golang](http://golang.org/) plugin adds a `godef` command which uses [guru](http://godoc.org/golang.org/x/tools/cmd/guru) or [godef](http://godoc.org/github.com/rogpeppe/godef) to find the definition under the cursor.
+This Sublime Text 2/3 [golang](http://golang.org/) plugin adds a `godef` command which uses [godef](http://godoc.org/github.com/rogpeppe/godef) or [guru](http://godoc.org/golang.org/x/tools/cmd/guru) to find the definition under the cursor.
 
 #### Compatible with GoSublime
 
-You can use this plugin working with [GoSublime](https://github.com/DisposaBoy/GoSublime) because GoSublime is not support `guru/godef`.
+You can use this plugin working with [GoSublime](https://github.com/DisposaBoy/GoSublime) because GoSublime is not support `godef/guru`.
 
 > This plugin support two different modes to find the definition of symbles:
 > 
-> `guru` tool offers improved definition lookups which are compatible with Go 1.5+ vendoring.
-> 
 > `godef` offers faster speed. But cannot find correct definition if the package name is not matched with import path: [rogpeppe/godef#40](https://github.com/rogpeppe/godef/issues/40)
 > 
-> The default mode is `guru`. You can change it in your setting.
+> `guru` tool offers improved definition lookups which are compatible with Go 1.5+ vendoring.
+> 
+> We use `godef` to find definition first, if it fails, try `guru` again.
 
 ## Installation
 
-The plugin assumes `guru` is present at `$GOPATH/bin/guru`. You need install `guru` first:
-
-```
-go get -v golang.org/x/tools/cmd/guru
-```
-Or if you choose mode godef, plugin assumes `godef` is present at `$GOPATH/bin/godef`. You need install `godef` first:
+The plugin assumes `godef/guru` is present at `$GOPATH/bin/`. You need install them first:
 
 ```
 go get -v github.com/rogpeppe/godef
+go get -v golang.org/x/tools/cmd/guru
 ```
 
 #### Sublime Package Control
@@ -123,8 +119,7 @@ There are so many reasons lead to `godef` fails. If that happens, do these:
 3. logs in the console will show you the reason why `godef` is not work.
 4. follow the logs and adjust your settings.
 5. check if your `GOPATH/GOROOT` is right in settings.
-6. choose `guru` mode if necessary.
-7. open an issue and paste the logs in it.
+6. open an issue and paste the logs in it.
 
 ## License
 
