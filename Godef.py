@@ -15,32 +15,36 @@ class GodefCommand(sublime_plugin.WindowCommand):
     """
 
     def __init__(self, window):
-        self.cmdpaths = None
+        self.systype = platform.system()
+        self.systype = None
+        self.gopath = None
         self.goroot = None
+        self.cmdpaths = []
         self.env = None
-        self.load()
-        super().__init__(window)
 
-    def load(self):
-        print("===============[Godef]Init Begin==============")
         default_setting = sublime.load_settings("Preferences.sublime-settings")
-        # default_line_ending = default_setting.get("default_line_ending")
-        # print("[Godef]DEBUG: default_line_ending: %s" % default_line_ending)
         default_setting.set("default_line_ending", "unix")
-        # new_line_ending = default_setting.get("default_line_ending")
-        # print("[Godef]DEBUG: line_ending: %s" % new_line_ending)
-
         settings = sublime.load_settings("Godef.sublime-settings")
         gopath = settings.get("gopath", os.getenv('GOPATH'))
+        goroot = settings.get("goroot", os.getenv('GOROOT'))
 
+        self.load(gopath, goroot, self.systype)
+        self.gopath = gopath
+        self.goroot = goroot
+        super().__init__(window)
+
+    def load(self, gopath, goroot, systype):
+        print("===============[Godef]Load Begin==============")
+        # print("[Godef]DEBUG: system type: %s" % self.systype)
         if not gopath:
             print("[Godef]ERROR: no GOPATH defined")
-            print("===============[Godef] Init End===============")
+            print("===============[Godef] Load End===============")
             return False
 
+        if not goroot:
+            print("[Godef]WARN: no GOROOT defined")
+
         cmdpaths = []
-        systype = platform.system()
-        # print("[Godef]DEBUG: system type: %s" % systype)
         for cmd in ['godef', 'guru']:
             found = False
             if systype == "Windows":
@@ -64,15 +68,12 @@ class GodefCommand(sublime_plugin.WindowCommand):
 
         if len(cmdpaths) == 0:
             print('[Godef]ERROR: godef/guru are not available.\n\
-                   Use "go get -u github.com/rogpeppe/godef"\n\
-                   and "go get -u golang.org/x/tools/cmd/guru"\n\
-                   to install them.')
-            print("===============[Godef] Init End===============")
+Make sure your gopath in settings is right.\n\
+Use "go get -u github.com/rogpeppe/godef"\n\
+and "go get -u golang.org/x/tools/cmd/guru"\n\
+to install them.')
+            print("===============[Godef] Load End===============")
             return False
-
-        goroot = settings.get("goroot", os.getenv('GOROOT'))
-        if not goroot:
-            print("[Godef]WARN: no GOROOT defined")
 
         # a weird bug on windows. sometimes unicode strings end up in the
         # environment and subprocess.call does not like this, encode them
@@ -89,16 +90,35 @@ class GodefCommand(sublime_plugin.WindowCommand):
             env["GOROOT"] = goroot
 
         self.cmdpaths = cmdpaths
-        self.goroot = goroot
         self.env = env
-        print("===============[Godef] Init End===============")
+        print("===============[Godef] Load End===============")
         return True
 
     def run(self):
-        if not self.cmdpaths and not self.load():
+        default_setting = sublime.load_settings("Preferences.sublime-settings")
+        default_setting.set("default_line_ending", "unix")
+        settings = sublime.load_settings("Godef.sublime-settings")
+        gopath = settings.get("gopath", os.getenv('GOPATH'))
+        goroot = settings.get("goroot", os.getenv('GOROOT'))
+
+        if self.gopath != gopath or self.goroot != goroot:
+            print('[Godef]INFO: settings change, reload conf')
+            self.gopath = gopath
+            self.goroot = goroot
+            self.cmdpaths = []
+            self.env = None
+        if len(self.cmdpaths) != 2 and not self.load(gopath, goroot, self.systype):
             return
 
         print("=================[Godef]Begin=================")
+        if len(self.cmdpaths) == 1:
+            if self.cmdpaths[0]['mode'] != 'godef':
+                print('[Godef]WARN: missing cmd "godef"')
+            else:
+                print('[Godef]WARN: missing cmd "guru"')
+        if not self.goroot:
+            print("[Godef]WARN: no GOROOT defined in settings")
+
         view = self.window.active_view()
         filename = view.file_name()
         select = view.sel()[0]
@@ -108,9 +128,9 @@ class GodefCommand(sublime_plugin.WindowCommand):
         string_before.encode("utf-8")
         buffer_before = bytearray(string_before, encoding="utf8")
         offset = len(buffer_before)
-        print("[Godef]INFO: selcet_begin: %s offset: %s" %
-              (str(select_begin), str(offset)))
+        print("[Godef]INFO: selcet_begin: %s offset: %s" % (select_begin, offset))
 
+        reset = False
         output = None
         succ = None
         for d in self.cmdpaths:
@@ -131,24 +151,27 @@ class GodefCommand(sublime_plugin.WindowCommand):
                                      startupinfo=startupinfo)
                 output, stderr = p.communicate()
             except Exception as e:
-                print("[Godef]EXPT: %s fail: %s setting need reload" % (d['mode'], e))
-                self.cmdpaths = None
-                print("=================[Godef] End =================")
-                return
+                print("[Godef]EXPT: %s fail: %s" % (d['mode'], e))
+                print('[Godef]WARN: %s binary not existed, need reload conf' % d['mode'])
+                reset = True
+                continue
             if stderr:
                 err = stderr.decode("utf-8").rstrip()
                 print("[Godef]ERROR: %s fail: %s" % (d['mode'], err))
-                continue
                 output = None
+                continue
+            elif len(output) < 3:
+                position = output.decode("utf-8").rstrip()
+                print("[Godef]ERROR: %s illegal output: %s" % (d['mode'], output))
+                continue
             else:
                 succ = d
                 break
 
+        if reset: self.cmdpaths = []
+
         if not output:
-            if len(self.cmdpaths) == 1 and 'godef' == self.cmdpaths[0]['mode']:
-                print('[Godef]ERROR: maybe you can install cmd "guru" and try again')
-            if not self.goroot:
-                print("[Godef]ERROR: maybe no GOROOT defined in settings")
+            print("[Godef]ERROR: all cmds failed")
             print("=================[Godef] End =================")
             return
 
