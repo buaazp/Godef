@@ -16,7 +16,6 @@ class GodefCommand(sublime_plugin.WindowCommand):
 
     def __init__(self, window):
         self.systype = platform.system()
-        self.systype = None
         self.gopath = None
         self.goroot = None
         self.cmdpaths = []
