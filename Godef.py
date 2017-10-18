@@ -30,7 +30,10 @@ class GodefCommand(sublime_plugin.WindowCommand):
         self.load(gopath, goroot, self.systype)
         self.gopath = gopath
         self.goroot = goroot
-        super().__init__(window)
+        if sys.version_info[0] == 2:
+            super(GodefCommand, self).__init__(window)
+        else:
+            super().__init__(window)
 
     def load(self, gopath, goroot, systype):
         print("===============[Godef]Load Begin==============")
