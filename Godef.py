@@ -6,6 +6,13 @@ import platform
 import sys
 import json
 
+def real_path(go_path):
+    if -1 != go_path.find("$"):
+        return os.path.expandvars(go_path)
+    elif -1 != go_path.find("~"):
+        return os.path.expanduser(go_path)
+    else:
+        return go_path
 
 class GodefCommand(sublime_plugin.WindowCommand):
     """
@@ -24,8 +31,8 @@ class GodefCommand(sublime_plugin.WindowCommand):
         default_setting = sublime.load_settings("Preferences.sublime-settings")
         default_setting.set("default_line_ending", "unix")
         settings = sublime.load_settings("Godef.sublime-settings")
-        gopath = settings.get("gopath", os.getenv('GOPATH'))
-        goroot = settings.get("goroot", os.getenv('GOROOT'))
+        gopath = real_path(settings.get("gopath", os.getenv('GOPATH')))
+        goroot = real_path(settings.get("goroot", os.getenv('GOROOT')))
 
         self.load(gopath, goroot, self.systype)
         self.gopath = gopath
@@ -100,8 +107,8 @@ to install them.')
         default_setting = sublime.load_settings("Preferences.sublime-settings")
         default_setting.set("default_line_ending", "unix")
         settings = sublime.load_settings("Godef.sublime-settings")
-        gopath = settings.get("gopath", os.getenv('GOPATH'))
-        goroot = settings.get("goroot", os.getenv('GOROOT'))
+        gopath = real_path(settings.get("gopath", os.getenv('GOPATH')))
+        goroot = real_path(settings.get("goroot", os.getenv('GOROOT')))
 
         if self.gopath != gopath or self.goroot != goroot:
             print('[Godef]INFO: settings change, reload conf')
