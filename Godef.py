@@ -6,13 +6,12 @@ import platform
 import sys
 import json
 
+
 def real_path(go_path):
-    if -1 != go_path.find("$"):
-        return os.path.expandvars(go_path)
-    elif -1 != go_path.find("~"):
-        return os.path.expanduser(go_path)
-    else:
-        return go_path
+    if go_path is None:
+        return None
+    return os.path.expanduser(os.path.expandvars(go_path))
+
 
 class GodefCommand(sublime_plugin.WindowCommand):
     """
