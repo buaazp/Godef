@@ -133,10 +133,11 @@ to install them.')
         select_begin = select.begin()
         select_before = sublime.Region(0, select_begin)
         string_before = view.substr(select_before)
-        string_before.encode("utf-8")
-        buffer_before = bytearray(string_before, encoding="utf8")
-        offset = len(buffer_before)
-        print("[Godef]INFO: selcet_begin: %s offset: %s" % (select_begin, offset))
+        offset = len(string_before.encode('utf-8'))
+        if view.line_endings() == 'Windows':
+            offset += string_before.count('\n')
+
+        print("[Godef]INFO: select_begin: %s offset: %s" % (select_begin, offset))
 
         reset = False
         output = None
