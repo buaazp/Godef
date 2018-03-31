@@ -1,3 +1,4 @@
 [
-    { "keys": ["g","d"], "command": "godef" }
+    { "keys": ["g","d"], "command": "godef" },
+    { "keys": ["g","h"], "command": "godef_prev" }
 ]
