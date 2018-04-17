@@ -26,13 +26,13 @@ class GodefCommand(sublime_plugin.WindowCommand):
         self.goroot = None
         self.cmdpaths = []
         self.env = None
+        self.gosublime = {}
+        self.read_gosublime(window)
 
         default_setting = sublime.load_settings("Preferences.sublime-settings")
         default_setting.set("default_line_ending", "unix")
-        settings = sublime.load_settings("Godef.sublime-settings")
-        gopath = real_path(settings.get("gopath", os.getenv('GOPATH')))
-        goroot = real_path(settings.get("goroot", os.getenv('GOROOT')))
-
+        gopath = self._gopath()
+        goroot = self._goroot()
         self.load(gopath, goroot, self.systype)
         self.gopath = gopath
         self.goroot = goroot
@@ -195,3 +195,31 @@ to install them.')
         print("[Godef]INFO: opening definition at %s" % position)
         view = self.window.open_file(position, sublime.ENCODED_POSITION)
         print("=================[Godef] End =================")
+
+    def read_gosublime(self, window):
+        """
+        reads environment variables from gosublime.
+        """
+        view = window.active_view()
+        if view is not None:
+            settings = view.settings()
+            gosublime = settings.get("GoSublime", None)
+            if gosublime and gosublime.get("env", None):
+                env = gosublime.get("env")
+                print("[Godef]INFO: found gosublime environment: {env}".format(env=env))
+                self.gosublime["gopath"] = env.get("GOPATH", "")
+                self.gosublime["goroot"] = env.get("GOROOT", "")
+
+    def _gopath(self):
+        settings = sublime.load_settings("Godef.sublime-settings")
+        gopath = real_path(settings.get("gopath", os.getenv('GOPATH')))
+        if gopath is None:
+            return self.gosublime.get("gopath", "")
+        return gopath
+
+    def _goroot(self):
+        settings = sublime.load_settings("Godef.sublime-settings")
+        goroot = real_path(settings.get("goroot", os.getenv('GOROOT')))
+        if goroot is None:
+            return self.gosublime.get("goroot", "")
+        return goroot
