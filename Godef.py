@@ -5,6 +5,7 @@ import os
 import platform
 import sys
 import json
+from collections import deque
 
 
 def real_path(go_path):
@@ -193,5 +194,37 @@ to install them.')
             else:
                 position = definition['objpos']
         print("[Godef]INFO: opening definition at %s" % position)
-        view = self.window.open_file(position, sublime.ENCODED_POSITION)
+        self.window.open_file(position, sublime.ENCODED_POSITION)
+        # record prev postion
+        startrow, startcol = view.rowcol(select_begin)
+        GodefPrevCommand.append(filename, startrow, startcol)
         print("=================[Godef] End =================")
+
+# GodefPrev Commands
+# code based on https://github.com/SublimeText/CTags/blob/development/ctagsplugin.py
+class GodefPrevCommand(sublime_plugin.WindowCommand):
+    """
+    Provide ``godef_back`` command.
+
+    Command "godef jump back" to the previous code point before a godef was navigated.
+
+    This is functionality supported natively by ST3 but not by ST2. It is
+    therefore included for legacy purposes.
+    """
+    buf = deque(maxlen=100)  # virtually a "ring buffer"
+
+    def run(self):
+        if not self.buf:
+            print("[GodefPrev]ERROR: GodefPrev buffer empty")
+            return
+
+        filename, startrow, startcol = self.buf.pop()
+        path = "{0}:{1}:{2}".format(filename, startrow +1, startcol + 1)
+        self.window.open_file(path, sublime.ENCODED_POSITION)
+        print("[GodefPrev]INFO: jump prev definition at %s" % path)
+
+    @classmethod
+    def append(cls, filename, startrow, startcol):
+        """Append a code point to the list"""
+        if filename:
+            cls.buf.append((filename, startrow, startcol))
