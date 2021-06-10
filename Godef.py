@@ -158,7 +158,7 @@ to install them.')
             try:
                 p = subprocess.Popen(args, stdout=subprocess.PIPE,
                                      stderr=subprocess.PIPE, env=self.env,
-                                     startupinfo=startupinfo)
+                                     startupinfo=startupinfo, cwd=os.path.dirname(filename))
                 output, stderr = p.communicate()
             except Exception as e:
                 print("[Godef]EXPT: %s fail: %s" % (d['mode'], e))
